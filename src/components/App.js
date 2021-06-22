@@ -1,42 +1,39 @@
-import React, { Component, useState } from "react";
+import React, {  useEffect, useState } from "react";
 import '../styles/App.css';
+const App = () => {
 
-class App extends Component {
-    constructor(props) {
-        super(props)
-        this.state = {
-            renderBall: false,
-            posi : 0,
-            ballPosition: { left: "0px" }
-        };
-        this.renderChoice = this.renderBallOrButton.bind(this)
-        this.buttonClickHandler = this.buttonClickHandler.bind(this)
+    const [renderBall,setRenderBall] = useState(false);
+    const [posi,setPosi] = useState(0);
+    const [ballPosition,setBallPosition] = useState({left:0,top:0});
+    
+    const handleListener =  (event)=>{
+        if(event.keyCode===39){
+                setBallPosition({
+            left :ballPosition.left +5,
+           
+        })
+        }
     };
-
-    buttonClickHandler() {
-   
-   }
-    renderBallOrButton() {
-		if (this.state.renderBall) {
-		    return <div className="ball" style={this.state.ballPosition}></div>
-		} else {
-		    return <button onClick={this.buttonClickHandler} >Click For One Ball</button>
-		}
-    }
-
     // bind ArrowRight keydown event
-    componentDidMount() {
-      
-    }
-
-    render() {
-        return (
-            <div className="playground">
-                {this.renderBallOrButton()}
-            </div>
-        )
-    }
-}
+    useEffect(()=> {
+        document.addEventListener("keydown",handleListener);
+        return () => document.removeEventListener("keydown",handleListener);
+    },[ballPosition]);
+  
+    const buttonClickHandler = () => {
+        setRenderBall(true);
+   };
+    const renderBallOrButton = () => {
+		if (renderBall) {
+		    return <div className="ball" style={{
+                left : ballPosition.left +"px",
+            }}></div>
+		} else {
+		    return <button onClick={buttonClickHandler} >Click For One Ball</button>
+		}
+    };
+    return  <div className="playground"> {renderBallOrButton()}</div>;
+};
 
 
 export default App;
